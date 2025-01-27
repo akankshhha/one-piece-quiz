@@ -13,7 +13,7 @@ const Loader = () => {
       repeatDelay: 0.5, // Delay before repeating,
     });
 
-    boxesRef.current.forEach((box, index) => {
+    boxesRef.current.forEach((box) => {
       timeline.to(
         box,
         {

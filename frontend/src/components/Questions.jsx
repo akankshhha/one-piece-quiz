@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import questions from "../questions";
+import questions from "../utilities/static data/questions";
 import { postScore } from "../services/scoreBoardService";
 import { useUser } from "./context/UserContext";
 
