@@ -29,7 +29,6 @@ const Questions = ({ onGoBack }) => {
     const timeUsed = 300 - quizTimer;
     setTimeTaken(timeUsed);
     setQuizCompleted(true);
-    // setUsername('')
 
     // Stop timers
     clearInterval(questionIntervalRef.current);

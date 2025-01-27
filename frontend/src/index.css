@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Loader Text Blinking Effect */
+@keyframes blink {
+    0%, 49% {
+      opacity: 1;
+    }
+    50%, 100% {
+      opacity: 0;
+    }
+  }
+  
+  /* Loader Text */
+  .text-loader {
+    animation: blink 1s infinite;
+  }
+  
+  /* Progress Bar Container */
+  .progress-bar-container {
+    border: 2px solid limegreen;
+    position: relative;
+  }
+  
+  /* Progress Bar (Retro Color Scheme) */
+  .progress-bar {
+    background-color: #00ff00;
+    transition: width 0.3s ease-out;
+  }
+  

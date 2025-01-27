@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useUser } from './context/UserContext';
-import { gsap } from "gsap";
 
 const StartScreen = ({ onStart }) => {
   const { setUsername } = useUser();
@@ -9,17 +8,20 @@ const StartScreen = ({ onStart }) => {
 
   const handleNameInput = (event) => {
     setInputValue(event.target.value);
-    setUsername(event.target.value)
   };
 
-  useEffect(() => {
-    // GSAP Animation: Fade-in and scale
-    gsap.fromTo(
-      titleRef.current,
-      { opacity: 0, scale: 0.8 },
-      { opacity: 1, scale: 1, duration: 1.5, ease: "power3.out" }
-    );
-  }, []);
+  const handleStart = () => {
+    if (!inputValue.trim()) {
+      alert('Please enter a name to proceed!');
+      return;
+    }
+    if(inputValue.length < 3) {
+      alert('Please enter a name that has more than 2 characters!');
+      return;
+    }
+    setUsername(inputValue.trim()); 
+    onStart(); 
+  };
 
   return (
     <div className="relative flex flex-col items-center justify-center h-screen bg-gradient-to-br from-blue-50 to-teal-50">
@@ -40,7 +42,7 @@ const StartScreen = ({ onStart }) => {
             className="px-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 focus:outline-none bg-white text-black w-64 transition-all duration-300 ease-in-out shadow-sm"
           />
           <button
-            onClick={onStart}
+            onClick={handleStart}
             className="px-6 py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg hover:bg-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md"
           >
             Game start!

@@ -5,10 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // fontFamily: {
-      //   vt323: ['"VT323"', 'monospace'],
-      //   pressStart: ['"Press Start 2P"', 'cursive'],
-      // },
+      fontFamily: {
+        vt323: ['"VT323"', 'monospace'],
+        pressStart: ['"Press Start 2P"', 'cursive'],
+      },
     },
   },
   plugins: [],

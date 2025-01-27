@@ -1,93 +1,82 @@
-import React, { useState } from 'react';
-import StartScreen from './components/StartScreen';
-import CountDown from './components/CountDown';
-import Questions from './components/Questions';
-import Scoreboard from './components/Scoreboard';
-import { UserProvider } from './components/context/UserContext';
-import { useUser } from "./components/context/UserContext";
+import React, { useState, useEffect } from "react";
+import StartScreen from "./components/StartScreen";
+import CountDown from "./components/CountDown";
+import Questions from "./components/Questions";
+import Scoreboard from "./components/Scoreboard";
+import { UserProvider } from "./components/context/UserContext";
+import Loader from "./components/reusable/Loader";
 
 const App = () => {
-  // const [difficulty, setDifficulty] = useState(null);
   const [showCountdown, setShowCountdown] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
   const [showScoreboard, setShowScoreboard] = useState(false);
-  const { username } = useUser();
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false); 
+    }, 3000);
+
+    return () => clearTimeout(timer); // Cleanup timer
+  }, []);
 
   // Start Quiz
   const startQuiz = () => {
-    if(!username) {
-      alert("Please enter the name to proceed!")
-      return
-    } 
-    setShowCountdown(true); // Show countdown
+    setShowCountdown(true); 
   };
 
   // Countdown Complete
   const handleCountdownComplete = () => {
-    setShowCountdown(false); // Hide countdown
-    setQuizStarted(true);    // Start quiz
+    setShowCountdown(false); 
+    setQuizStarted(true); 
   };
 
   // Go Back (Uniform Approach)
   const onGoBack = () => {
-    setShowCountdown(false);  // Hide countdown
-    setQuizStarted(false);    // Reset quiz
-    setShowScoreboard(false); // Hide scoreboard
+    setShowCountdown(false); 
+    setQuizStarted(false); 
+    setShowScoreboard(false); 
   };
 
   // Show Scoreboard
   const handleShowScoreboard = () => {
-    setShowScoreboard(true); // Display scoreboard
+    setShowScoreboard(true); 
   };
 
   return (
     <UserProvider>
-      {/* Start Screen */}
-      { !showCountdown && !quizStarted && !showScoreboard && (
-        <StartScreen
-          onStart={startQuiz}
-        />
-      )}
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          {/* Start Screen */}
+          {!showCountdown && !quizStarted && !showScoreboard && (
+            <StartScreen onStart={startQuiz} />
+          )}
 
-      {/* Countdown */}
-      { showCountdown && !quizStarted && !showScoreboard && (
-        <CountDown
-          onComplete={handleCountdownComplete}
-        />
-      )}
+          {/* Countdown */}
+          {showCountdown && !quizStarted && !showScoreboard && (
+            <CountDown onComplete={handleCountdownComplete} />
+          )}
 
-      {/* Quiz Questions */}
-      {quizStarted && !showScoreboard && (
-        <Questions
-          onGoBack={onGoBack} setQuizStarted// Consistent prop name
-        />
-      )}
+          {/* Quiz Questions */}
+          {quizStarted && !showScoreboard && <Questions onGoBack={onGoBack} />}
 
-      {/* Quiz Questions */}
-      {quizStarted  && (
-        <Questions
-          onGoBack={onGoBack} setQuizStarted// Consistent prop name
-        />
-      )}
+          {/* Scoreboard */}
+          {showScoreboard && <Scoreboard onGoBack={onGoBack} />}
 
-      {/* Scoreboard */}
-      {showScoreboard && (
-        <Scoreboard
-          onGoBack={onGoBack} // Consistent prop name
-        />
-      )}
-
-      {/* View Scoreboard Button on Start Screen */}
-      {!showCountdown && !quizStarted && (
-        <div className="fixed bottom-4 right-4">
-          <button
-            onClick={handleShowScoreboard}
-            className="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105"
-          >
-            View Scoreboard
-          </button>
-        </div>
+          {/* View Scoreboard Button on Start Screen */}
+          {!showCountdown && !quizStarted && (
+            <div className="fixed bottom-4 right-4">
+              <button
+                onClick={handleShowScoreboard}
+                className="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105"
+              >
+                View Scoreboard
+              </button>
+            </div>
+          )}
+        </>
       )}
     </UserProvider>
   );
