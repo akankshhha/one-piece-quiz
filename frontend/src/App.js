@@ -71,7 +71,7 @@ const App = () => {
             <div className="fixed bottom-4 right-4">
               <button
                 onClick={handleShowScoreboard}
-                className="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105"
+                className="px-6 py-3 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 text-xl"
               >
                 {showScoreboard ? 'Go back' : 'View Showboard'}
               </button>

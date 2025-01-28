@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import questions from "../utilities/static data/questions";
 import { postScore } from "../services/scoreBoardService";
 import { useUser } from "./context/UserContext";
+import gsap from "gsap";
 
 const Questions = ({ onGoBack }) => {
   const { userName, setUsername } = useUser();
@@ -9,6 +10,7 @@ const Questions = ({ onGoBack }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
+  const cardRef = useRef(null)
 
   // Timer states
   const [questionTimer, setQuestionTimer] = useState(30);
@@ -68,6 +70,26 @@ const Questions = ({ onGoBack }) => {
     handleQuizCompletion,
   ]);
 
+  const handleTransitionToNextQuestion = () => {
+    // Zoom out animation
+    gsap.to(cardRef.current, {
+      scale: 0,
+      duration: 0.5,
+      ease: "power3.in",
+      onComplete: () => {
+        // Call the handler to proceed to the next question
+        handleNextQuestion();
+
+        // Zoom in animation for the new question
+        gsap.fromTo(
+          cardRef.current,
+          { scale: 0 },
+          { scale: 1, duration: 0.5, ease: "power3.out" }
+        );
+      },
+    });
+  };
+
   // Countdown for question timer
   useEffect(() => {
     if (questionTimer > 0 && !quizCompleted) {
@@ -109,12 +131,12 @@ const Questions = ({ onGoBack }) => {
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center text-white relative">
+    <div className="h-screen flex flex-col items-center justify-center relative">
       {/* End Quiz Button */}
       {!quizCompleted && (
         <button
           onClick={handleQuizCompletion}
-          className="absolute top-4 left-4 px-6 py-2 rounded-md bg-red-500 hover:bg-red-600 text-white font-medium transition-all duration-200"
+          className="absolute top-4 left-4 px-6 py-2 rounded-md bg-red-500 hover:bg-red-600 font-medium transition-all duration-200"
         >
           End Quiz
         </button>
@@ -126,14 +148,14 @@ const Questions = ({ onGoBack }) => {
       </div>
 
       {!quizCompleted ? (
-        <div className="relative p-8 bg-almost-black rounded-lg shadow-lg w-[600px] h-auto flex flex-col justify-between overflow-hidden">
+        <div className="relative p-8 bg-almost-black rounded-lg shadow-lg w-[600px] h-auto flex flex-col justify-between overflow-hidden" ref={cardRef}>
           {/* Question Timer */}
           <div className="text-center mb-4 text-lg text-red-500">
             {formatTime(questionTimer)}
           </div>
 
           {/* Question Bubble */}
-          <div className="absolute -top-6 -right-6 w-28 h-28 bg-gray-600 text-white flex items-center justify-center rounded-full text-4xl font-bold shadow-md">
+          <div className="absolute -top-6 -right-6 w-28 h-28 bg-gray-600 flex items-center justify-center rounded-full text-4xl font-bold shadow-md">
             {currentQuestionIndex + 1}
           </div>
 
@@ -143,40 +165,39 @@ const Questions = ({ onGoBack }) => {
           </h2>
 
           {/* Options */}
-          <div className="space-y-4">
-            {currentQuestion.options.map((option, index) => {
-              const isCorrect = option === currentQuestion.answer;
-              const isSelected = option === selectedOption;
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {currentQuestion.options.map((option, index) => {
+    const isCorrect = option === currentQuestion.answer;
+    const isSelected = option === selectedOption;
 
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleOptionClick(option)}
-                  className={`flex items-center w-full py-3 px-4 rounded-md text-lg font-medium transition-all duration-200 
-                  ${
-                    isSelected
-                      ? isCorrect
-                        ? "bg-green-100 text-green-700 border border-green-500"
-                        : "bg-red-100 text-red-700 border border-red-500"
-                      : "bg-gray-700 hover:bg-gray-500"
-                  }`}
-                  disabled={showAnswer}
-                >
-                  {isSelected && (
-                    <span className="mr-3 text-xl">
-                      {isCorrect ? "✅" : "❌"}
-                    </span>
-                  )}
-                  {option}
-                </button>
-              );
-            })}
-          </div>
+    return (
+      <button
+        key={index}
+        onClick={() => handleOptionClick(option)}
+        className={`flex items-center py-3 px-4 rounded-md text-lg font-medium transition-all duration-200
+          ${
+            isSelected
+              ? isCorrect
+                ? "bg-green-100 text-green-700 border border-green-500"
+                : "bg-red-100 text-red-700 border border-red-500"
+              : "bg-gray-700 hover:bg-gray-500"
+          }`}
+        disabled={showAnswer}
+      >
+        {isSelected && (
+          <span className="mr-3 text-xl">{isCorrect ? "✅" : "❌"}</span>
+        )}
+        {option}
+      </button>
+    );
+  })}
+</div>
+
 
           {/* Next Question Button */}
           <button
-            onClick={handleNextQuestion}
-            className="w-full py-3 mt-6 rounded-md bg-blue-500 hover:bg-blue-600 text-white font-medium transition-all duration-200"
+            onClick={handleTransitionToNextQuestion}
+            className="w-full py-3 mt-6 rounded-md font-medium transition-all duration-200"
           >
             {currentQuestionIndex === questions.length - 1
               ? "Finish"
@@ -184,9 +205,6 @@ const Questions = ({ onGoBack }) => {
           </button>
         </div>
       ) : (
-        ""
-      )}
-      {quizCompleted && (
         <div className="p-8 bg-gray-600 rounded-lg shadow-lg w-[650px] h-auto flex flex-col items-center justify-center mb-6">
           <h1 className="text-3xl mb-4">
             Quiz Completed!
@@ -200,7 +218,7 @@ const Questions = ({ onGoBack }) => {
           </p>
           <button
             onClick={onGoBack}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200"
+            className="px-6 py-3 rounded-lg transition-all duration-200"
           >
             Restart Quiz
           </button>

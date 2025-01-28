@@ -115,11 +115,11 @@ const StartScreen = ({ onStart }) => {
               value={inputValue}
               onChange={handleNameInput}
               placeholder="Enter your name"
-              className="px-4 py-3 text-lg border border-gray-500 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none text-white w-64 transition-all duration-300 ease-in-out shadow-sm bg-gray-700"
+              className="px-4 py-3 text-lg border border-gray-500 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none w-64 transition-all duration-300 ease-in-out shadow-sm bg-gray-700"
             />
             <button
               onClick={handleStart}
-              className="px-6 py-3 text-white text-lg rounded-lg hover:bg-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md"
+              className="px-6 py-3 text-lg rounded-lg transition-all duration-300 ease-in-out transform hover:text-gray-400 shadow-md"
             >
               Confirm
             </button>

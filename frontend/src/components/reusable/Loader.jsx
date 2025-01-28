@@ -30,7 +30,7 @@ const Loader = () => {
 
   return (
     <div id="loader" className="flex flex-col justify-center items-center h-screen bg-[#1E201E]">
-      <div className="text-loader font-vt323 text-white text-3xl mb-4 font-vt323">Loading</div>
+      <div className="text-loader font-vt323 text-3xl mb-4 font-vt323">Loading</div>
       <div className="progress-bar-container flex space-x-1 bg-gray-700 rounded-md p-1">
         {Array.from({ length: 6 }).map((_, i) => (
           <div
