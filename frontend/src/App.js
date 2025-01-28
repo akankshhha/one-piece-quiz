@@ -41,7 +41,7 @@ const App = () => {
 
   // Show Scoreboard
   const handleShowScoreboard = () => {
-    setShowScoreboard(true); 
+    setShowScoreboard(!showScoreboard); 
   };
 
   return (
@@ -64,7 +64,7 @@ const App = () => {
           {quizStarted && !showScoreboard && <Questions onGoBack={onGoBack} />}
 
           {/* Scoreboard */}
-          {showScoreboard && <Scoreboard onGoBack={onGoBack} />}
+          {showScoreboard && <Scoreboard />}
 
           {/* View Scoreboard Button on Start Screen */}
           {!showCountdown && !quizStarted && (
@@ -73,7 +73,7 @@ const App = () => {
                 onClick={handleShowScoreboard}
                 className="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105"
               >
-                View Scoreboard
+                {showScoreboard ? 'Go back' : 'View Showboard'}
               </button>
             </div>
           )}

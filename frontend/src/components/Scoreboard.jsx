@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { getScores } from '../services/scoreBoardService';
 import gsap from 'gsap';
 
-const ScoreboardPage = ({ onGoBack }) => {
+const ScoreboardPage = () => {
   const [scores, setScores] = useState([]);
   const rowsRef = useRef([]);
 
@@ -60,16 +60,6 @@ const ScoreboardPage = ({ onGoBack }) => {
           )}
         </tbody>
       </table>
-
-      {/* Go Back Button */}
-      <div className="flex justify-center">
-        <button
-          onClick={onGoBack}
-          className="px-6 py-3 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105"
-        >
-          Go Back
-        </button>
-      </div>
     </div>
   );
 };
