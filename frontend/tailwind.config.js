@@ -10,7 +10,8 @@ module.exports = {
         pressStart: ['"Press Start 2P"', 'cursive'],
       },
       colors: {
-        'cream-yellow': '#ECDFCC', // Cream yellow color
+        'cream-yellow': '#ECDFCC', 
+        'almost-black': '#161717'
       },
     },
   },

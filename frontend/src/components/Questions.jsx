@@ -36,16 +36,14 @@ const Questions = ({ onGoBack }) => {
 
 
     try {
-      const record = await postScore({ username: userName, score: score, time_taken: timeUsed });
-      alert(`Score added successfully! ID: ${record?.data?.id}`);
+      await postScore({ username: userName, score: score, time_taken: timeUsed });
+      // alert(`Score added successfully! ID: ${record?.data?.id}`);
 
       setUsername(""); // Clear any previous errors
     } catch (err) {
-        alert("Failed to submit score. Please try again.");
+        // alert("Failed to submit score. Please try again.");
         console.error(err);
     }
-
-    // addToScoreboard(score, timeUsed);
 
   }, [quizTimer, score, userName, setUsername]);
 
@@ -111,7 +109,7 @@ const Questions = ({ onGoBack }) => {
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-blue-200 text-white relative">
+    <div className="h-screen flex flex-col items-center justify-center text-white relative">
       {/* End Quiz Button */}
       {!quizCompleted && (
         <button
@@ -123,24 +121,24 @@ const Questions = ({ onGoBack }) => {
       )}
 
       {/* Quiz Timer */}
-      <div className="absolute top-4 right-4 text-2xl font-semibold text-blue-700">
+      <div className="absolute top-4 right-4 text-2xl">
         {formatTime(quizTimer)}
       </div>
 
       {!quizCompleted ? (
-        <div className="relative p-8 bg-white text-black rounded-lg shadow-lg w-[650px] h-auto flex flex-col justify-between overflow-hidden">
+        <div className="relative p-8 bg-almost-black rounded-lg shadow-lg w-[600px] h-auto flex flex-col justify-between overflow-hidden">
           {/* Question Timer */}
-          <div className="text-center mb-4 text-lg font-semibold text-red-500">
+          <div className="text-center mb-4 text-lg text-red-500">
             {formatTime(questionTimer)}
           </div>
 
           {/* Question Bubble */}
-          <div className="absolute -top-6 -right-6 w-20 h-20 bg-blue-500 text-white flex items-center justify-center rounded-full text-2xl font-bold shadow-md">
+          <div className="absolute -top-6 -right-6 w-28 h-28 bg-gray-600 text-white flex items-center justify-center rounded-full text-4xl font-bold shadow-md">
             {currentQuestionIndex + 1}
           </div>
 
           {/* Question */}
-          <h2 className="text-xl font-semibold mb-6 text-center">
+          <h2 className="text-2xl mb-6 text-center">
             {currentQuestion.question}
           </h2>
 
@@ -160,7 +158,7 @@ const Questions = ({ onGoBack }) => {
                       ? isCorrect
                         ? "bg-green-100 text-green-700 border border-green-500"
                         : "bg-red-100 text-red-700 border border-red-500"
-                      : "bg-gray-100 hover:bg-gray-200"
+                      : "bg-gray-700 hover:bg-gray-500"
                   }`}
                   disabled={showAnswer}
                 >
@@ -189,14 +187,14 @@ const Questions = ({ onGoBack }) => {
         ""
       )}
       {quizCompleted && (
-        <div className="p-8 bg-white text-black rounded-lg shadow-lg w-[650px] h-auto flex flex-col items-center justify-center mb-6">
-          <h1 className="text-3xl font-bold text-blue-600 mb-4">
+        <div className="p-8 bg-gray-600 rounded-lg shadow-lg w-[650px] h-auto flex flex-col items-center justify-center mb-6">
+          <h1 className="text-3xl mb-4">
             Quiz Completed!
           </h1>
-          <p className="text-xl text-gray-700 mb-4">
+          <p className="text-xl mb-4">
             Your Score: {score}/{questions.length}
           </p>
-          <p className="text-xl text-gray-700 mb-8">
+          <p className="text-xl mb-8">
             Time Taken: {Math.floor(timeTaken / 60)} minutes and{" "}
             {timeTaken % 60} seconds
           </p>

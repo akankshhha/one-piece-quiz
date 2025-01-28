@@ -58,7 +58,7 @@ const StartScreen = ({ onStart }) => {
   return (
     <div className="relative flex flex-col items-center justify-center h-screen">
       <h1
-        className="text-5xl md:text-6xl font-semibold mb-8 text-center"
+        className="text-5xl md:text-6xl mb-8 text-center"
         ref={pirateRef}
       >
         <Typewriter
@@ -71,6 +71,7 @@ const StartScreen = ({ onStart }) => {
           }}
           options={{
             cursor: "_",
+            delay: 50
           }}
         />
       </h1>
@@ -99,7 +100,11 @@ const StartScreen = ({ onStart }) => {
                       }
                     );
                   })
-                  .start();
+                  .start()
+              }}
+              options={{
+                cursor: "_",
+                delay: 50
               }}
             />
           </p>
