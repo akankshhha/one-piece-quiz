@@ -9,6 +9,9 @@ module.exports = {
         vt323: ['"VT323"', 'monospace'],
         pressStart: ['"Press Start 2P"', 'cursive'],
       },
+      colors: {
+        'cream-yellow': '#ECDFCC', // Cream yellow color
+      },
     },
   },
   plugins: [],

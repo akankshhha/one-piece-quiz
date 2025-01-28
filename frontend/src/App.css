@@ -1,5 +1,13 @@
 @import url('./utilities/styles/animations.css');
 
+body {
+  font-family: "VT323", serif;
+  font-weight: 400;
+  color: #ECDFCC;
+  background-color: #1E201E;
+  font-style: normal;
+}
+
 /* Loader Text */
 .text-loader {
   animation: blink 1s infinite;

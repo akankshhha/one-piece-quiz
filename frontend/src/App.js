@@ -5,6 +5,7 @@ import Questions from "./components/Questions";
 import Scoreboard from "./components/Scoreboard";
 import { UserProvider } from "./components/context/UserContext";
 import Loader from "./components/reusable/Loader";
+import '../src/App.css'
 
 const App = () => {
   const [showCountdown, setShowCountdown] = useState(false);
@@ -15,7 +16,7 @@ const App = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false); 
-    }, 3000);
+    }, 5000);
 
     return () => clearTimeout(timer); // Cleanup timer
   }, []);
