@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
 router.post('/', async (req, res) => {
     const { username, score, time_taken } = req.body
    
-    if(!username || typeof score !== 'number' || typeof time_taken !== 'number') {
+    if(!username || typeof score !== 'number' || typeof time_taken !== 'number' || username.length < 3) {
         console.log(username)
         return res.status(400).json({error: "Invalid input data!"})
     }
