@@ -18,7 +18,7 @@ const ScoreboardPage = () => {
         {
           opacity: 1,
           x: 0,
-          stagger: 0.2, 
+          stagger: 0.1, 
           duration: 0.6,
           ease: "power3.out",
         }

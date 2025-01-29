@@ -10,6 +10,14 @@ const StartScreen = ({ onStart }) => {
   const nameRef = useRef(null);
   const inputRef = useRef(null);
   const [showNameTypewriter, setShowNameTypewriter] = useState(false);
+  const [showCharacterList, setShowCharacterList] = useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const characterRefs = useRef([]);
+
+  const characters = [
+    { id: 1, name: "Captain Luffy", image: "/assets/luffy-chibi.png" },
+    { id: 2, name: "Roronoa Zoro", image: "/assets/zoro-chibi.png" },
+  ];
 
   const handleNameInput = (event) => {
     setInputValue(event.target.value);
@@ -55,12 +63,27 @@ const StartScreen = ({ onStart }) => {
     return () => timeline.kill();
   }, []);
 
+  const handleMouseEnter = (index) => {
+    gsap.to(characterRefs.current[index].querySelector(".char-name"), {
+      opacity: 1,
+      y: 3,
+      duration: 0.1,
+      ease: "power2.out",
+    });
+  };
+
+  const handleMouseLeave = (index) => {
+    gsap.to(characterRefs.current[index].querySelector(".char-name"), {
+      opacity: 0,
+      y: 0,
+      duration: 0.1,
+      ease: "power2.out",
+    });
+  };
+
   return (
     <div className="relative flex flex-col items-center justify-center h-screen">
-      <h1
-        className="text-5xl md:text-6xl mb-8 text-center"
-        ref={pirateRef}
-      >
+      <h1 className="text-5xl md:text-6xl mb-8 text-center" ref={pirateRef}>
         <Typewriter
           onInit={(typewriter) => {
             typewriter
@@ -71,7 +94,7 @@ const StartScreen = ({ onStart }) => {
           }}
           options={{
             cursor: "_",
-            delay: 50
+            delay: 50,
           }}
         />
       </h1>
@@ -100,11 +123,11 @@ const StartScreen = ({ onStart }) => {
                       }
                     );
                   })
-                  .start()
+                  .start();
               }}
               options={{
                 cursor: "_",
-                delay: 50
+                delay: 50,
               }}
             />
           </p>
@@ -118,12 +141,56 @@ const StartScreen = ({ onStart }) => {
               className="px-4 py-3 text-lg border border-gray-500 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none w-64 transition-all duration-300 ease-in-out shadow-sm bg-gray-700"
             />
             <button
-              onClick={handleStart}
+              onClick={() => setShowCharacterList(true)}
               className="px-6 py-3 text-lg rounded-lg transition-all duration-300 ease-in-out transform hover:text-gray-400 shadow-md"
             >
               Confirm
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Character Selection */}
+      {showCharacterList && (
+        <div className="mt-8 text-center">
+          <h2 className="text-xl mb-4">Choose Your Partner</h2>
+          <div className="flex gap-8 justify-center">
+            {characters.map((character, index) => (
+              <>
+                <div
+                  key={character.id}
+                  ref={(el) => (characterRefs.current[index] = el)}
+                  onMouseEnter={() => handleMouseEnter(index)}
+                  onMouseLeave={() => handleMouseLeave(index)}
+                  onClick={() => setSelectedCharacter(character)}
+                  className={`relative cursor-pointer transition-transform duration-300 ${
+                    selectedCharacter?.id === character.id
+                      ? "scale-140"
+                      : "hover:scale-105"
+                  }`}
+                >
+                  <img
+                    src={character.image}
+                    alt={character.name}
+                    className="w-20 h-20"
+                  />
+                </div>
+                <div className="char-name absolute left-1/2 transform text-white text-sm opacity-0 transition-opacity duration-300">
+                  {character.name}
+                </div>
+              </>
+            ))}
+          </div>
+
+          {/* Start Game Button (Animated with GSAP) */}
+          {selectedCharacter && (
+            <button
+              onClick={handleStart}
+              className="mt-6 px-6 py-3 text-lg rounded-lg transition-all duration-300 text-white hover:bg-gray-700"
+            >
+              Start Game!
+            </button>
+          )}
         </div>
       )}
     </div>
