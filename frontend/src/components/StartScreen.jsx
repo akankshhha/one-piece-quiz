@@ -12,7 +12,9 @@ const StartScreen = ({ onStart }) => {
   const [showNameTypewriter, setShowNameTypewriter] = useState(false);
   const [showCharacterList, setShowCharacterList] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
-  const characterRefs = useRef([]);
+  // const characterRefs = useRef([]);
+  const nameSectionRef = useRef(null);
+  const characterSectionRef = useRef();
 
   const characters = [
     { id: 1, name: "Captain Luffy", image: "/assets/luffy-chibi.png" },
@@ -23,7 +25,7 @@ const StartScreen = ({ onStart }) => {
     setInputValue(event.target.value);
   };
 
-  const handleStart = () => {
+  const handleConfirm = () => {
     if (!inputValue.trim()) {
       alert("Please enter a name to proceed!");
       return;
@@ -32,6 +34,33 @@ const StartScreen = ({ onStart }) => {
       alert("Please enter a name that has more than 2 characters!");
       return;
     }
+
+
+    // Zoom out name section
+    gsap.to(nameSectionRef.current, {
+      scale: 0.8,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power2.inOut",
+      onComplete: () => {
+        setShowNameTypewriter(false);
+        setShowCharacterList(true);
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (showCharacterList) {
+      gsap.fromTo(
+        characterSectionRef.current,
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.8, ease: "power2.inOut" }
+      );
+    }
+  }, [showCharacterList]);
+
+  const handleStart = () => {
+   
     setUsername(inputValue.trim());
     onStart();
   };
@@ -63,23 +92,23 @@ const StartScreen = ({ onStart }) => {
     return () => timeline.kill();
   }, []);
 
-  const handleMouseEnter = (index) => {
-    gsap.to(characterRefs.current[index].querySelector(".char-name"), {
-      opacity: 1,
-      y: 3,
-      duration: 0.1,
-      ease: "power2.out",
-    });
-  };
+  // const handleMouseEnter = (index) => {
+  //   gsap.to(characterRefs.current[index].querySelector(".char-name"), {
+  //     opacity: 1,
+  //     y: 3,
+  //     duration: 0.1,
+  //     ease: "power2.out",
+  //   });
+  // };
 
-  const handleMouseLeave = (index) => {
-    gsap.to(characterRefs.current[index].querySelector(".char-name"), {
-      opacity: 0,
-      y: 0,
-      duration: 0.1,
-      ease: "power2.out",
-    });
-  };
+  // const handleMouseLeave = (index) => {
+  //   gsap.to(characterRefs.current[index].querySelector(".char-name"), {
+  //     opacity: 0,
+  //     y: 0,
+  //     duration: 0.1,
+  //     ease: "power2.out",
+  //   });
+  // };
 
   return (
     <div className="relative flex flex-col items-center justify-center h-screen">
@@ -100,7 +129,7 @@ const StartScreen = ({ onStart }) => {
       </h1>
 
       {showNameTypewriter && (
-        <div className="flex flex-col items-center gap-6 mb-10">
+        <div className="flex flex-col items-center gap-6 mb-10" ref={nameSectionRef}>
           <p className="text-2xl" ref={nameRef}>
             <Typewriter
               onInit={(typewriter) => {
@@ -141,7 +170,7 @@ const StartScreen = ({ onStart }) => {
               className="px-4 py-3 text-lg border border-gray-500 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none w-64 transition-all duration-300 ease-in-out shadow-sm bg-gray-700"
             />
             <button
-              onClick={() => setShowCharacterList(true)}
+              onClick={handleConfirm}
               className="px-6 py-3 text-lg rounded-lg transition-all duration-300 ease-in-out transform hover:text-gray-400 shadow-md"
             >
               Confirm
@@ -152,37 +181,23 @@ const StartScreen = ({ onStart }) => {
 
       {/* Character Selection */}
       {showCharacterList && (
-        <div className="mt-8 text-center">
-          <h2 className="text-xl mb-4">Choose Your Partner</h2>
+        <div ref={characterSectionRef} className="mt-8 text-center opacity-0 scale-80">
+          <h2 className="text-2xl mb-4">Choose Your Partner</h2>
           <div className="flex gap-8 justify-center">
-            {characters.map((character, index) => (
-              <>
-                <div
-                  key={character.id}
-                  ref={(el) => (characterRefs.current[index] = el)}
-                  onMouseEnter={() => handleMouseEnter(index)}
-                  onMouseLeave={() => handleMouseLeave(index)}
-                  onClick={() => setSelectedCharacter(character)}
-                  className={`relative cursor-pointer transition-transform duration-300 ${
-                    selectedCharacter?.id === character.id
-                      ? "scale-140"
-                      : "hover:scale-105"
-                  }`}
-                >
-                  <img
-                    src={character.image}
-                    alt={character.name}
-                    className="w-20 h-20"
-                  />
-                </div>
-                <div className="char-name absolute left-1/2 transform text-white text-sm opacity-0 transition-opacity duration-300">
-                  {character.name}
-                </div>
-              </>
+            {characters.map((character) => (
+              <div
+                key={character.id}
+                onClick={() => setSelectedCharacter(character)}
+                className={`relative cursor-pointer transition-transform duration-300 ${
+                  selectedCharacter?.id === character.id ? "scale-140" : "hover:scale-105"
+                }`}
+              >
+                <img src={character.image} alt={character.name} className="w-20 h-20" />
+              </div>
             ))}
           </div>
 
-          {/* Start Game Button (Animated with GSAP) */}
+          {/* Start Game Button */}
           {selectedCharacter && (
             <button
               onClick={handleStart}
@@ -195,6 +210,6 @@ const StartScreen = ({ onStart }) => {
       )}
     </div>
   );
-};
+}
 
 export default StartScreen;
