@@ -53,8 +53,8 @@ const StartScreen = ({ onStart }) => {
     if (showCharacterList) {
       gsap.fromTo(
         characterSectionRef.current,
-        { scale: 0.8, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.8, ease: "power2.inOut" }
+        { scale: 1.2, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.5)" }
       );
     }
   }, [showCharacterList]);
@@ -82,7 +82,7 @@ const StartScreen = ({ onStart }) => {
         {
           opacity: 1,
           duration: 1,
-          ease: "power3.out",
+          ease: "power3.inOut",
           onComplete: () => {
             setShowNameTypewriter(true);
           },
