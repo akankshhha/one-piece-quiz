@@ -94,7 +94,7 @@ const Questions = ({ onGoBack }) => {
   useEffect(() => {
     if (questionTimer > 0 && !quizCompleted) {
       questionIntervalRef.current = setInterval(() => {
-        setQuestionTimer((prev) => prev - 1);
+        setQuestionTimer((prev) => prev - 1);                         
       }, 1000);
 
       return () => clearInterval(questionIntervalRef.current);
@@ -143,7 +143,7 @@ const Questions = ({ onGoBack }) => {
       )}
 
       {/* Quiz Timer */}
-      <div className="absolute top-4 right-4 text-2xl">
+      <div className="absolute top-4 right-4 text-4xl">
         {formatTime(quizTimer)}
       </div>
 
