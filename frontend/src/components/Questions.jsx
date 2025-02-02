@@ -39,11 +39,9 @@ const Questions = ({ onGoBack }) => {
 
     try {
       await postScore({ username: userName, score: score, time_taken: timeUsed });
-      // alert(`Score added successfully! ID: ${record?.data?.id}`);
 
-      setUsername(""); // Clear any previous errors
+      setUsername(""); 
     } catch (err) {
-        // alert("Failed to submit score. Please try again.");
         console.error(err);
     }
 
@@ -109,7 +107,6 @@ const Questions = ({ onGoBack }) => {
       quizIntervalRef.current = setInterval(() => {
         setQuizTimer((prev) => prev - 1);
       }, 1000);
-
       return () => clearInterval(quizIntervalRef.current);
     } else if (quizTimer === 0) {
       handleQuizCompletion();
@@ -143,14 +140,14 @@ const Questions = ({ onGoBack }) => {
       )}
 
       {/* Quiz Timer */}
-      <div className="absolute top-4 right-4 text-4xl">
+      <div className={`absolute top-4 right-4 text-4xl ${quizTimer < 60 ? 'text-red-500' : 'text-cream-yellow'}`}>
         {formatTime(quizTimer)}
       </div>
 
       {!quizCompleted ? (
         <div className="relative p-8 bg-almost-black rounded-lg shadow-lg w-[600px] h-auto flex flex-col justify-between overflow-hidden" ref={cardRef}>
           {/* Question Timer */}
-          <div className="text-center mb-4 text-lg text-red-500">
+          <div className={ `text-center mb-4 text-lg ${questionTimer < 10 ? 'text-red-500' : 'text-cream-yellow'}`}>
             {formatTime(questionTimer)}
           </div>
 
