@@ -4,7 +4,7 @@ import { useUser } from "./context/UserContext";
 
 const CountDown = ({ onComplete }) => {
   const [count, setCount] = useState(3);
-  const { userName } = useUser();
+  const { userName, selectedCharacter } = useUser();
   const imageRef = useRef(null);
 
   useEffect(() => {
@@ -12,7 +12,6 @@ const CountDown = ({ onComplete }) => {
       onComplete();
       return;
     }
-
     const timer = setTimeout(() => {
       setCount((prev) => prev - 1);
     }, 1000);
@@ -46,13 +45,13 @@ const CountDown = ({ onComplete }) => {
       {count > 0 ? (
         <>
           <h1 className="text-4xl my-4">The quiz will start in {count}</h1>
-          <div className="relative p-4 w-32 h-32 overflow-hidden rounded-full">
+          <div className="relative p-4 w-32 h-32 overflow-hidden">
             <img
               key={count} // Ensures a re-render on count change
-              src={`/assets/countdown-images/zoro-loading-${count}.png`}
+              src={`/assets/countdown-images/${selectedCharacter.imgName}-loading-${count}.png`}
               alt={`Countdown ${count}`}
               ref={imageRef}
-              className="absolute w-24 h-24"
+              className={`absolute ${selectedCharacter.imgName === 'luffy' ? 'w-32' : 'w-24 h-24'} `}
             />
           </div>
         </>

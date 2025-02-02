@@ -4,21 +4,20 @@ import Typewriter from "typewriter-effect";
 import gsap from "gsap";
 
 const StartScreen = ({ onStart }) => {
-  const { setUsername } = useUser();
+  const { setUsername, selectedCharacter, setSelectedCharacter } = useUser();
   const [inputValue, setInputValue] = useState("");
   const pirateRef = useRef(null);
   const nameRef = useRef(null);
   const inputRef = useRef(null);
   const [showNameTypewriter, setShowNameTypewriter] = useState(false);
   const [showCharacterList, setShowCharacterList] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState(null);
   // const characterRefs = useRef([]);
   const nameSectionRef = useRef(null);
   const characterSectionRef = useRef();
 
   const characters = [
-    { id: 1, name: "Captain Luffy", image: "/assets/luffy-chibi.png" },
-    { id: 2, name: "Roronoa Zoro", image: "/assets/zoro-chibi.png" },
+    { id: 1, imgName: "luffy", fullName: "Monkey D. Luffy", image: "/assets/luffy-chibi.png" },
+    { id: 2, imgName: "zoro", fullName: "Roronoa Zoro", image: "/assets/zoro-chibi.png" },
   ];
 
   const handleNameInput = (event) => {
@@ -192,7 +191,7 @@ const StartScreen = ({ onStart }) => {
                   selectedCharacter?.id === character.id ? "scale-140" : "hover:scale-105"
                 }`}
               >
-                <img src={character.image} alt={character.name} className="w-20 h-20" />
+                <img src={character.image} alt={character.fullName} className="w-20 h-20" />
               </div>
             ))}
           </div>
