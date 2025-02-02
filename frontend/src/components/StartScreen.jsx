@@ -129,7 +129,7 @@ const StartScreen = ({ onStart }) => {
 
       {showNameTypewriter && (
         <div className="flex flex-col items-center gap-6 mb-10" ref={nameSectionRef}>
-          <p className="text-2xl" ref={nameRef}>
+          <div className="text-2xl" ref={nameRef}>
             <Typewriter
               onInit={(typewriter) => {
                 typewriter
@@ -158,7 +158,7 @@ const StartScreen = ({ onStart }) => {
                 delay: 50,
               }}
             />
-          </p>
+          </div>
 
           <div ref={inputRef} className="flex items-center gap-4 opacity-0">
             <input
