@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useUser } from "./context/UserContext";
 import Typewriter from "typewriter-effect";
 import gsap from "gsap";
+import { Tooltip } from "react-tooltip";
 
 const StartScreen = ({ onStart }) => {
   const { setUsername, selectedCharacter, setSelectedCharacter } = useUser();
@@ -16,8 +17,18 @@ const StartScreen = ({ onStart }) => {
   const characterSectionRef = useRef();
 
   const characters = [
-    { id: 1, imgName: "luffy", fullName: "Monkey D. Luffy", image: "/assets/luffy-chibi.png" },
-    { id: 2, imgName: "zoro", fullName: "Roronoa Zoro", image: "/assets/zoro-chibi.png" },
+    {
+      id: 1,
+      imgName: "luffy",
+      fullName: "Monkey D. Luffy",
+      image: "/assets/luffy-chibi.png",
+    },
+    {
+      id: 2,
+      imgName: "zoro",
+      fullName: "Roronoa Zoro",
+      image: "/assets/zoro-chibi.png",
+    },
   ];
 
   const handleNameInput = (event) => {
@@ -33,7 +44,6 @@ const StartScreen = ({ onStart }) => {
       alert("Please enter a name that has more than 2 characters!");
       return;
     }
-
 
     // Zoom out name section
     gsap.to(nameSectionRef.current, {
@@ -59,7 +69,6 @@ const StartScreen = ({ onStart }) => {
   }, [showCharacterList]);
 
   const handleStart = () => {
-   
     setUsername(inputValue.trim());
     onStart();
   };
@@ -128,7 +137,10 @@ const StartScreen = ({ onStart }) => {
       </h1>
 
       {showNameTypewriter && (
-        <div className="flex flex-col items-center gap-6 mb-10" ref={nameSectionRef}>
+        <div
+          className="flex flex-col items-center gap-6 mb-10"
+          ref={nameSectionRef}
+        >
           <div className="text-2xl" ref={nameRef}>
             <Typewriter
               onInit={(typewriter) => {
@@ -180,22 +192,35 @@ const StartScreen = ({ onStart }) => {
 
       {/* Character Selection */}
       {showCharacterList && (
-        <div ref={characterSectionRef} className="mt-8 text-center opacity-0 scale-80">
-          <h2 className="text-2xl mb-4">Choose Your Partner</h2>
-          <div className="flex gap-8 justify-center">
+        <div
+          ref={characterSectionRef}
+          className="mt-8 text-center opacity-0 scale-80"
+        >
+          <h2 className="text-xl mb-4 text-center">Choose your partner</h2>
+          <div className="flex gap-8">
             {characters.map((character) => (
               <div
                 key={character.id}
                 onClick={() => setSelectedCharacter(character)}
                 className={`relative cursor-pointer transition-transform duration-300 ${
-                  selectedCharacter?.id === character.id ? "scale-140" : "hover:scale-105"
+                  selectedCharacter?.id === character.id
+                    ? "scale-[1.6]"
+                    : "hover:scale-105"
                 }`}
+                data-tooltip-id="my-tooltip"
+                data-tooltip-content={character.fullName}
+                data-tooltip-place="bottom"
               >
-                <img src={character.image} alt={character.fullName} className="w-20 h-20" />
+                <img
+                  src={character.image}
+                  alt={character.fullName}
+                  className="w-20 h-20"
+                />
               </div>
             ))}
           </div>
 
+          <Tooltip id="my-tooltip" />
           {/* Start Game Button */}
           {selectedCharacter && (
             <button
@@ -209,6 +234,6 @@ const StartScreen = ({ onStart }) => {
       )}
     </div>
   );
-}
+};
 
 export default StartScreen;
