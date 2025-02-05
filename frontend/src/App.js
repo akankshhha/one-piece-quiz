@@ -4,7 +4,7 @@ import CountDown from "./components/CountDown";
 import Questions from "./components/Questions";
 import Scoreboard from "./components/Scoreboard";
 import { UserProvider } from "./components/context/UserContext";
-import Loader from "./components/reusable/Loader";
+import Loader from "./components/Loader";
 import '../src/App.css'
 
 const App = () => {
