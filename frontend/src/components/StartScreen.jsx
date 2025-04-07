@@ -1,13 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useUser } from "./context/UserContext";
 import Typewriter from "typewriter-effect";
-import gsap from "gsap";
 import { Tooltip } from "react-tooltip";
+import gsap from "gsap";
+import { TextPlugin } from "gsap/TextPlugin";
+gsap.registerPlugin(TextPlugin);
 
 const StartScreen = ({ onStart }) => {
-  const { setUsername, selectedCharacter, setSelectedCharacter } = useUser();
+  const { username, setUsername, selectedCharacter, setSelectedCharacter } = useUser();
   const [inputValue, setInputValue] = useState("");
   const pirateRef = useRef(null);
+  const pirateNameRef = useRef(null)
   const nameRef = useRef(null);
   const inputRef = useRef(null);
   const [showNameTypewriter, setShowNameTypewriter] = useState(false);
@@ -29,6 +32,54 @@ const StartScreen = ({ onStart }) => {
       fullName: "Roronoa Zoro",
       image: "/assets/zoro-chibi.png",
     },
+    {
+      id: 3,
+      imgName: "luffy",
+      fullName: "Monkey D. Luffy",
+      image: "/assets/luffy-chibi.png",
+    },
+    {
+      id: 4,
+      imgName: "zoro",
+      fullName: "Roronoa Zoro",
+      image: "/assets/zoro-chibi.png",
+    },
+    {
+      id: 5,
+      imgName: "luffy",
+      fullName: "Monkey D. Luffy",
+      image: "/assets/luffy-chibi.png",
+    },
+    {
+      id: 6,
+      imgName: "zoro",
+      fullName: "Roronoa Zoro",
+      image: "/assets/zoro-chibi.png",
+    },
+    {
+      id: 7,
+      imgName: "luffy",
+      fullName: "Monkey D. Luffy",
+      image: "/assets/luffy-chibi.png",
+    },
+    {
+      id: 8,
+      imgName: "zoro",
+      fullName: "Roronoa Zoro",
+      image: "/assets/zoro-chibi.png",
+    },
+    {
+      id: 9,
+      imgName: "luffy",
+      fullName: "Monkey D. Luffy",
+      image: "/assets/luffy-chibi.png",
+    },
+    {
+      id: 10,
+      imgName: "zoro",
+      fullName: "Roronoa Zoro",
+      image: "/assets/zoro-chibi.png",
+    }
   ];
 
   const handleNameInput = (event) => {
@@ -45,6 +96,7 @@ const StartScreen = ({ onStart }) => {
       return;
     }
 
+    setUsername(inputValue.trim())
     // Zoom out name section
     gsap.to(nameSectionRef.current, {
       scale: 0.8,
@@ -56,14 +108,24 @@ const StartScreen = ({ onStart }) => {
         setShowCharacterList(true);
       },
     });
-  };
+
+    gsap.to(pirateNameRef.current, {
+      text: username, // Update to entered name
+      duration: 1.2,
+      ease: "power2.inOut",
+      scrambleText: {
+        chars: "abcdefghijklmnopqrstuvwxyz0123456789",
+        revealDelay: 0.2,
+      }
+  });
+}
 
   useEffect(() => {
     if (showCharacterList) {
       gsap.fromTo(
         characterSectionRef.current,
-        { scale: 1.2, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.8, ease: "back.out(1.5)" }
+        { scale: 1.5, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.5)" }
       );
     }
   }, [showCharacterList]);
@@ -100,31 +162,13 @@ const StartScreen = ({ onStart }) => {
     return () => timeline.kill();
   }, []);
 
-  // const handleMouseEnter = (index) => {
-  //   gsap.to(characterRefs.current[index].querySelector(".char-name"), {
-  //     opacity: 1,
-  //     y: 3,
-  //     duration: 0.1,
-  //     ease: "power2.out",
-  //   });
-  // };
-
-  // const handleMouseLeave = (index) => {
-  //   gsap.to(characterRefs.current[index].querySelector(".char-name"), {
-  //     opacity: 0,
-  //     y: 0,
-  //     duration: 0.1,
-  //     ease: "power2.out",
-  //   });
-  // };
-
   return (
     <div className="relative flex flex-col items-center justify-center h-screen">
       <h1 className="text-5xl md:text-6xl mb-8 text-center" ref={pirateRef}>
         <Typewriter
           onInit={(typewriter) => {
             typewriter
-              .typeString("Welcome, Pirate!")
+            .typeString(`Welcome, ${username || "Pirate"}!`) 
               .pauseFor(100)
               .changeCursor(" ")
               .start();
@@ -138,7 +182,7 @@ const StartScreen = ({ onStart }) => {
 
       {showNameTypewriter && (
         <div
-          className="flex flex-col items-center gap-6 mb-10"
+          className="flex flex-col items-center gap-6"
           ref={nameSectionRef}
         >
           <div className="text-2xl" ref={nameRef}>
@@ -194,19 +238,15 @@ const StartScreen = ({ onStart }) => {
       {showCharacterList && (
         <div
           ref={characterSectionRef}
-          className="mt-8 text-center opacity-0 scale-80"
+          className="text-center opacity-0 scale-80"
         >
           <h2 className="text-xl mb-4 text-center">Choose your partner</h2>
-          <div className="flex gap-8">
+          <div className="grid grid-cols-5 rounded-lg">
             {characters.map((character) => (
               <div
                 key={character.id}
                 onClick={() => setSelectedCharacter(character)}
-                className={`relative cursor-pointer transition-transform duration-300 ${
-                  selectedCharacter?.id === character.id
-                    ? "scale-[1.6]"
-                    : "hover:scale-105"
-                }`}
+                className={`relative cursor-pointer transition-transform duration-300 w-20 h-20 border border-gray-600 flex items-center justify-center`}
                 data-tooltip-id="my-tooltip"
                 data-tooltip-content={character.fullName}
                 data-tooltip-place="bottom"
@@ -214,7 +254,11 @@ const StartScreen = ({ onStart }) => {
                 <img
                   src={character.image}
                   alt={character.fullName}
-                  className="w-20 h-20"
+                  className={`w-20 h-20  ${
+                  selectedCharacter?.id === character.id
+                    ? "scale-[1.2]"
+                    : "hover:scale-105 "
+                }`}
                 />
               </div>
             ))}
