@@ -175,7 +175,7 @@ const StartScreen = ({ onStart }) => {
           }}
           options={{
             cursor: "_",
-            delay: 50,
+            delay: 40,
           }}
         />
       </h1>
@@ -271,7 +271,7 @@ const StartScreen = ({ onStart }) => {
               onClick={handleStart}
               className="mt-6 px-6 py-3 text-lg rounded-lg transition-all duration-300 text-white hover:bg-gray-700"
             >
-              Start Game!
+              Confirm
             </button>
           )}
         </div>
