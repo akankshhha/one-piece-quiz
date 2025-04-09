@@ -4,18 +4,20 @@ import Typewriter from "typewriter-effect";
 import { Tooltip } from "react-tooltip";
 import gsap from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
+import ScrambleText from "./ScrambleText";
+import '../App.css'
+
 gsap.registerPlugin(TextPlugin);
 
 const StartScreen = ({ onStart }) => {
   const { username, setUsername, selectedCharacter, setSelectedCharacter } = useUser();
   const [inputValue, setInputValue] = useState("");
   const pirateRef = useRef(null);
-  const pirateNameRef = useRef(null)
   const nameRef = useRef(null);
   const inputRef = useRef(null);
   const [showNameTypewriter, setShowNameTypewriter] = useState(false);
   const [showCharacterList, setShowCharacterList] = useState(false);
-  // const characterRefs = useRef([]);
+  const [showScramble, setShowScramble] = useState(false);
   const nameSectionRef = useRef(null);
   const characterSectionRef = useRef();
 
@@ -96,7 +98,9 @@ const StartScreen = ({ onStart }) => {
       return;
     }
 
-    setUsername(inputValue.trim())
+    setUsername(inputValue.trim());
+    setShowScramble(true);
+
     // Zoom out name section
     gsap.to(nameSectionRef.current, {
       scale: 0.8,
@@ -108,17 +112,7 @@ const StartScreen = ({ onStart }) => {
         setShowCharacterList(true);
       },
     });
-
-    gsap.to(pirateNameRef.current, {
-      text: username, // Update to entered name
-      duration: 1.2,
-      ease: "power2.inOut",
-      scrambleText: {
-        chars: "abcdefghijklmnopqrstuvwxyz0123456789",
-        revealDelay: 0.2,
-      }
-  });
-}
+  };
 
   useEffect(() => {
     if (showCharacterList) {
@@ -141,7 +135,6 @@ const StartScreen = ({ onStart }) => {
       .to(pirateRef.current, {
         opacity: 1,
         delay: 2,
-        // y: "-40%",
         scale: 0.8,
         duration: 1,
         ease: "power3.inOut",
@@ -165,6 +158,7 @@ const StartScreen = ({ onStart }) => {
   return (
     <div className="relative flex flex-col items-center justify-center h-screen">
       <h1 className="text-5xl md:text-6xl mb-8 text-center" ref={pirateRef}>
+      {!showScramble ? (
         <Typewriter
           onInit={(typewriter) => {
             typewriter
@@ -178,6 +172,15 @@ const StartScreen = ({ onStart }) => {
             delay: 40,
           }}
         />
+      ) : (
+        <div className="flex items-center justify-center">
+          Welcome,&nbsp;
+          <ScrambleText
+           text={`${inputValue}!`} 
+           scrambleSpeed={30}
+          />
+        </div>
+      )}
       </h1>
 
       {showNameTypewriter && (
