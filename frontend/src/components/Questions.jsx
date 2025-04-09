@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import questions from "../utilities/static data/questions";
+import Typewriter from "typewriter-effect";
 import { postScore } from "../services/scoreBoardService";
 import { useUser } from "./context/UserContext";
 import gsap from "gsap";
@@ -10,6 +11,7 @@ const Questions = ({ onGoBack }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
+  const [showCalculatedTime, setShowCalculatedTime] = useState(false)
   const cardRef = useRef(null)
 
   // Timer states
@@ -140,7 +142,7 @@ const Questions = ({ onGoBack }) => {
       )}
 
       {/* Quiz Timer */}
-      <div className={`absolute top-4 right-4 text-4xl ${quizTimer < 60 ? 'text-red-500' : 'text-cream-yellow'}`}>
+     <div className={`absolute top-4 right-4 text-4xl transition-opacity delay-700 duration-200 ease-out ${quizTimer < 60 ? 'text-red-500' : 'text-cream-yellow'} ${!showCalculatedTime ? 'opacity-100' : 'opacity-0'}`}>
         {formatTime(quizTimer)}
       </div>
 
@@ -202,24 +204,39 @@ const Questions = ({ onGoBack }) => {
           </button>
         </div>
       ) : (
-        <div className="p-8 bg-gray-600 rounded-lg shadow-lg w-[650px] h-auto flex flex-col items-center justify-center mb-6">
-          <h1 className="text-3xl mb-4">
-            Quiz Completed!
-          </h1>
-          <p className="text-xl mb-4">
-            Your Score: {score}/{questions.length}
-          </p>
-          <p className="text-xl mb-8">
-            Time Taken: {Math.floor(timeTaken / 60)} minutes and{" "}
-            {timeTaken % 60} seconds
-          </p>
-          <button
-            onClick={onGoBack}
-            className="px-6 py-3 rounded-lg transition-all duration-200"
-          >
-            Restart Quiz
-          </button>
-        </div>
+        <div className="p-8 rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.25)] w-[650px] h-auto flex flex-col items-center justify-center mb-6 backdrop-blur-md bg-white/10 border border-white/20 transform transition-transform duration-300">
+        <h1 className="text-3xl mb-4 text-white drop-shadow-md">
+          Quiz Completed!
+        </h1>
+        <p className="text-xl mb-4 text-white/90">
+          Your Score: {score}/{questions.length}
+        </p>
+        <p className="text-xl mb-8 text-white/90 flex">
+        <Typewriter
+          onInit={(typewriter) => {
+            typewriter
+            .typeString("You completed the quiz in ") 
+              .pauseFor(100)
+              .callFunction(() => setShowCalculatedTime(true))
+              .changeCursor(" ")
+              .start();
+          }}
+          options={{
+            cursor: "_",
+            delay: 40,
+          }}
+        />
+         
+          <span className={`text-yellow-400 ml-1 transition-opacity delay-700 duration-200 ease-in ${showCalculatedTime ? 'opacity-100' : 'opacity-0'}`}>{' '} {Math.floor(timeTaken / 60)}min {timeTaken % 60}sec</span>
+        </p>
+        <button
+          onClick={onGoBack}
+          className="px-4 py-2 rounded-lg bg-yellow-500 text-almost-black font-semibold shadow-md hover:bg-yellow-400 active:scale-95 transition-all duration-200"
+        >
+          Restart Quiz
+        </button>
+      </div>
+      
       )}
     </div>
   );
