@@ -25,21 +25,37 @@ const CountDown = ({ onComplete }) => {
 
       tl.fromTo(
         imageRef.current,
-        { x: "-150%", opacity: 0 },
-        { x: "0%", opacity: 1, duration: 0.5, ease: "power2.out" }
+        { 
+          scale: 0.1, 
+          opacity: 0,
+          filter: "brightness(0) blur(5px)"
+        },
+        { 
+          scale: 1.1, 
+          opacity: 1,
+          filter: "brightness(1.2) blur(0px)",
+          duration: 0.4, 
+          ease: "power2.out" 
+        }
       ).to(imageRef.current, {
-        x: "100%",
+        scale: 1,
+        filter: "brightness(1)",
+        duration: 0.3,
+        ease: "elastic.out(1, 0.3)",
+        delay: 0.1
+      }).to(imageRef.current, {
         opacity: 0,
+        scale: 1.5,
         duration: 0.5,
-        ease: "power2.out",
         delay: 0.7,
+        ease: "power2.in"
       });
     }
   }, [count]);
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <h1 className="text-5xl font-semibold">Get ready {userName}!</h1>
+      <h1 className="text-5xl font-semibold">Attention {userName}!</h1>
 
       {count > 0 ? (
         <>
@@ -58,7 +74,7 @@ const CountDown = ({ onComplete }) => {
               ref={imageRef}
               className={`${
                 selectedCharacter.imgName === "luffy" ? "w-36" : "w-28"
-              } transition-all duration-300`}
+              } transition-all duration-700`}
             />
           </div>
         </>

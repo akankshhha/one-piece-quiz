@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { getScores } from '../services/scoreBoardService';
+import { getScores } from '../services/backendService';
 import gsap from 'gsap';
 
 const ScoreboardPage = () => {

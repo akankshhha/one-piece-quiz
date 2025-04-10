@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import questions from "../utilities/static data/questions";
 import Typewriter from "typewriter-effect";
-import { postScore } from "../services/scoreBoardService";
+import { postScore } from "../services/backendService";
 import { useUser } from "./context/UserContext";
 import gsap from "gsap";
 
@@ -211,7 +211,7 @@ const Questions = ({ onGoBack }) => {
         <p className="text-xl mb-4 text-white/90">
           Your Score: {score}/{questions.length}
         </p>
-        <p className="text-xl mb-8 text-white/90 flex">
+        <div className="text-xl mb-8 text-white/90 flex text-left">
         <Typewriter
           onInit={(typewriter) => {
             typewriter
@@ -228,7 +228,7 @@ const Questions = ({ onGoBack }) => {
         />
          
           <span className={`text-yellow-400 ml-1 transition-opacity delay-700 duration-200 ease-in ${showCalculatedTime ? 'opacity-100' : 'opacity-0'}`}>{' '} {Math.floor(timeTaken / 60)}min {timeTaken % 60}sec</span>
-        </p>
+        </div>
         <button
           onClick={onGoBack}
           className="px-4 py-2 rounded-lg bg-yellow-500 text-almost-black font-semibold shadow-md hover:bg-yellow-400 active:scale-95 transition-all duration-200"
