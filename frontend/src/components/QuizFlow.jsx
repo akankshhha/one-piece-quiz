@@ -85,7 +85,7 @@ const QuizFlow = () => {
             <div className="fixed bottom-4 right-4">
               <button
                 onClick={handleShowScoreboard}
-                className="px-6 py-3 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 text-xl"
+                className="px-6 py-3 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 text-xl bg-slate-700"
               >
                 {showScoreboard ? "Go back" : "View Showboard"}
               </button>

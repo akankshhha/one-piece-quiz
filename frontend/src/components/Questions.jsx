@@ -196,7 +196,7 @@ const Questions = ({ onGoBack }) => {
           {/* Next Question Button */}
           <button
             onClick={handleTransitionToNextQuestion}
-            className="w-full py-3 mt-6 rounded-md font-medium transition-all duration-200"
+            className="w-full py-3 mt-6 rounded-md font-medium transition-all duration-200 bg-slate-700"
           >
             {currentQuestionIndex === questions.length - 1
               ? "Finish"

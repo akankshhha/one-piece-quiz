@@ -114,6 +114,46 @@ const StartScreen = ({ onStart }) => {
     });
   };
 
+  const handleKeyDown = (event) => {
+    if(event.key === 'Enter') {
+      handleConfirm()
+    }
+  }
+
+  const handleAfterCharacterSelection = (character) => {
+    setSelectedCharacter(character)
+
+  //   //tv closing animation
+  //   const tl = gsap.timeline({
+  //     onComplete: onAnimationComplete
+  //   });
+
+  //   //vertical closing
+  //   tl.to(characterSectionRef.current, {
+  //     height: 2,
+  //     duration: 0.15,
+  //     ease: "power2.inOut"
+  //   });
+
+  //   //horizontal closing
+  //   tl.to(characterSectionRef.current, {
+  //     width: 2,
+  //     duration: 0.4,
+  //     ease: "power2.in"
+  //   });
+
+  //   tl.to(characterSectionRef.current, {
+  //     opacity: 0,
+  //     duration: 0.1,
+  //     ease: "power2.in"
+  //   });
+
+  }
+
+  // const onAnimationComplete = () => {
+  //   console.log("Animation is completed")
+  // }
+
   useEffect(() => {
     if (showCharacterList) {
       gsap.fromTo(
@@ -175,10 +215,7 @@ const StartScreen = ({ onStart }) => {
       ) : (
         <div className="flex items-center justify-center">
           Welcome,&nbsp;
-          <ScrambleText
-           text={`${inputValue}!`} 
-           scrambleSpeed={30}
-          />
+          <ScrambleText text={`${inputValue}!`} scrambleSpeed={30} />
         </div>
       )}
       </h1>
@@ -224,12 +261,13 @@ const StartScreen = ({ onStart }) => {
               type="text"
               value={inputValue}
               onChange={handleNameInput}
+              onKeyDown={handleKeyDown}
               placeholder="Enter your name"
               className="px-4 py-3 text-lg border border-gray-500 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none w-64 transition-all duration-300 ease-in-out shadow-sm bg-gray-700"
             />
             <button
               onClick={handleConfirm}
-              className="px-6 py-3 text-lg rounded-lg transition-all duration-300 ease-in-out transform hover:text-gray-400 shadow-md"
+              className="px-6 py-3 text-lg rounded-lg transition-all duration-300 ease-in-out transform bg-slate-700 hover:text-gray-400 shadow-md"
             >
               Confirm
             </button>
@@ -243,12 +281,14 @@ const StartScreen = ({ onStart }) => {
           ref={characterSectionRef}
           className="text-center opacity-0 scale-80"
         >
-          <h2 className="text-xl mb-4 text-center">Choose your partner</h2>
+          <h2 className="text-xl mb-4 text-center">
+            Choose partner to assist you in quiz
+          </h2>
           <div className="grid grid-cols-5 rounded-lg">
             {characters.map((character) => (
               <div
                 key={character.id}
-                onClick={() => setSelectedCharacter(character)}
+                onClick={() => handleAfterCharacterSelection(character)}
                 className={`relative cursor-pointer transition-transform duration-300 w-20 h-20 border border-gray-600 flex items-center justify-center`}
                 data-tooltip-id="my-tooltip"
                 data-tooltip-content={character.fullName}
@@ -272,7 +312,7 @@ const StartScreen = ({ onStart }) => {
           {selectedCharacter && (
             <button
               onClick={handleStart}
-              className="mt-6 px-6 py-3 text-lg rounded-lg transition-all duration-300 text-white hover:bg-gray-700"
+              className="mt-6 px-6 py-3 text-lg rounded-lg transition-all duration-300 text-white bg-slate-700 hover:bg-gray-400"
             >
               Confirm
             </button>
