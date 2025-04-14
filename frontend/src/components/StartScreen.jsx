@@ -5,12 +5,14 @@ import { Tooltip } from "react-tooltip";
 import gsap from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
 import ScrambleText from "./ScrambleText";
-import '../App.css'
+import Ripples from "react-ripples";
+import "../App.css";
 
 gsap.registerPlugin(TextPlugin);
 
 const StartScreen = ({ onStart }) => {
-  const { username, setUsername, selectedCharacter, setSelectedCharacter } = useUser();
+  const { username, setUsername, selectedCharacter, setSelectedCharacter } =
+    useUser();
   const [inputValue, setInputValue] = useState("");
   const pirateRef = useRef(null);
   const nameRef = useRef(null);
@@ -81,7 +83,7 @@ const StartScreen = ({ onStart }) => {
       imgName: "zoro",
       fullName: "Roronoa Zoro",
       image: "/assets/zoro-chibi.png",
-    }
+    },
   ];
 
   const handleNameInput = (event) => {
@@ -115,44 +117,15 @@ const StartScreen = ({ onStart }) => {
   };
 
   const handleKeyDown = (event) => {
-    if(event.key === 'Enter') {
-      handleConfirm()
+    if (event.key === "Enter") {
+      handleConfirm();
     }
-  }
+  };
 
   const handleAfterCharacterSelection = (character) => {
-    setSelectedCharacter(character)
-
-  //   //tv closing animation
-  //   const tl = gsap.timeline({
-  //     onComplete: onAnimationComplete
-  //   });
-
-  //   //vertical closing
-  //   tl.to(characterSectionRef.current, {
-  //     height: 2,
-  //     duration: 0.15,
-  //     ease: "power2.inOut"
-  //   });
-
-  //   //horizontal closing
-  //   tl.to(characterSectionRef.current, {
-  //     width: 2,
-  //     duration: 0.4,
-  //     ease: "power2.in"
-  //   });
-
-  //   tl.to(characterSectionRef.current, {
-  //     opacity: 0,
-  //     duration: 0.1,
-  //     ease: "power2.in"
-  //   });
-
-  }
-
-  // const onAnimationComplete = () => {
-  //   console.log("Animation is completed")
-  // }
+    console.log(character)
+    setSelectedCharacter(character);
+  };
 
   useEffect(() => {
     if (showCharacterList) {
@@ -165,6 +138,8 @@ const StartScreen = ({ onStart }) => {
   }, [showCharacterList]);
 
   const handleStart = () => {
+    if(!selectedCharacter) return
+
     setUsername(inputValue.trim());
     onStart();
   };
@@ -198,33 +173,30 @@ const StartScreen = ({ onStart }) => {
   return (
     <div className="relative flex flex-col items-center justify-center h-screen">
       <h1 className="text-5xl md:text-6xl mb-8 text-center" ref={pirateRef}>
-      {!showScramble ? (
-        <Typewriter
-          onInit={(typewriter) => {
-            typewriter
-            .typeString(`Welcome, ${username || "Pirate"}!`) 
-              .pauseFor(100)
-              .changeCursor(" ")
-              .start();
-          }}
-          options={{
-            cursor: "_",
-            delay: 40,
-          }}
-        />
-      ) : (
-        <div className="flex items-center justify-center">
-          Welcome,&nbsp;
-          <ScrambleText text={`${inputValue}!`} scrambleSpeed={30} />
-        </div>
-      )}
+        {!showScramble ? (
+          <Typewriter
+            onInit={(typewriter) => {
+              typewriter
+                .typeString(`Welcome, ${username || "Pirate"}!`)
+                .pauseFor(100)
+                .changeCursor(" ")
+                .start();
+            }}
+            options={{
+              cursor: "_",
+              delay: 40,
+            }}
+          />
+        ) : (
+          <div className="flex items-center justify-center">
+            Welcome,&nbsp;
+            <ScrambleText text={`${inputValue}!`} scrambleSpeed={30} />
+          </div>
+        )}
       </h1>
 
       {showNameTypewriter && (
-        <div
-          className="flex flex-col items-center gap-6"
-          ref={nameSectionRef}
-        >
+        <div className="flex flex-col items-center gap-6" ref={nameSectionRef}>
           <div className="text-2xl" ref={nameRef}>
             <Typewriter
               onInit={(typewriter) => {
@@ -265,12 +237,14 @@ const StartScreen = ({ onStart }) => {
               placeholder="Enter your name"
               className="px-4 py-3 text-lg border border-gray-500 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none w-64 transition-all duration-300 ease-in-out shadow-sm bg-gray-700"
             />
-            <button
-              onClick={handleConfirm}
-              className="px-6 py-3 text-lg rounded-lg transition-all duration-300 ease-in-out transform bg-slate-700 hover:text-gray-400 shadow-md"
-            >
-              Confirm
-            </button>
+            <Ripples>
+              <button
+                onClick={handleConfirm}
+                className="px-6 py-3 text-lg rounded-lg transition-all duration-300 ease-in-out transform bg-slate-700 shadow-md"
+              >
+                Confirm
+              </button>
+            </Ripples>
           </div>
         </div>
       )}
@@ -279,7 +253,7 @@ const StartScreen = ({ onStart }) => {
       {showCharacterList && (
         <div
           ref={characterSectionRef}
-          className="text-center opacity-0 scale-80"
+          className="text-center"
         >
           <h2 className="text-xl mb-4 text-center">
             Choose partner to assist you in quiz
@@ -298,25 +272,33 @@ const StartScreen = ({ onStart }) => {
                   src={character.image}
                   alt={character.fullName}
                   className={`w-20 h-20  ${
-                  selectedCharacter?.id === character.id
-                    ? "scale-[1.2]"
-                    : "hover:scale-105 "
-                }`}
+                    selectedCharacter?.id === character.id
+                      ? "scale-[1.2]"
+                      : "hover:scale-105 "
+                  }`}
                 />
               </div>
             ))}
           </div>
 
-          <Tooltip id="my-tooltip" />
+          <Tooltip id="my-tooltip" class Name="z-50"/>
           {/* Start Game Button */}
-          {selectedCharacter && (
+          {
+            selectedCharacter && 
+            <Ripples>
             <button
               onClick={handleStart}
-              className="mt-6 px-6 py-3 text-lg rounded-lg transition-all duration-300 text-white bg-slate-700 hover:bg-gray-400"
+              className={`mt-6 px-6 py-3 text-lg rounded-lg transition-all duration-300 text-white bg-slate-700`}
+              data-tooltip-id="my-tooltip-btn"
+              data-tooltip-content="Choose a character first."
+              data-tooltip-place="bottom"
             >
               Confirm
             </button>
-          )}
+          </Ripples>
+          }
+          
+            {!selectedCharacter && <Tooltip id="my-tooltip-btn" />}
         </div>
       )}
     </div>

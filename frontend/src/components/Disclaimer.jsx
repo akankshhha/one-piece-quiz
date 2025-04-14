@@ -1,6 +1,7 @@
 import React, {useRef, useState} from 'react'
 import Typewriter from "typewriter-effect";
 import { useUser } from './context/UserContext';
+import Ripples from "react-ripples";
 import '../utilities/styles/animations.css'
 
 const Disclaimer = ({handleCountdown}) => {
@@ -23,7 +24,7 @@ const skipDisclaimer = () => {
         onInit={(typewriter) => {
           typewriter
             .typeString(
-              ` Hey ${userName}. You will be given 10 questions, if you do not know the answer you may skip the question - the points will be zero for the question skipped. The score is out of 10. Good luck pirate! You'll need it.`
+              `Hey <span style="color: #facc15;">${userName}</span>. You will be given 10 questions, if you do not know the answer you may skip the question - the points will be zero for the question skipped. The score is out of 10. Good luck pirate! You'll need it.`
             )
             .pauseFor(100)
             .callFunction(() => skipDisclaimer())
@@ -33,12 +34,18 @@ const skipDisclaimer = () => {
         options={{
           cursor: "_",
           delay: 20,
+          html: true
         }}
-      /> : <p>{` Hey ${userName}. You will be given 10 questions, if you do not know the answer you may skip the question - the points will be zero for the question skipped. The score is out of 10. Good luck pirate! You'll need it.`}</p>}
+      /> : <p>{`Hey`} <span className='text-yellow-400'>{`${userName}.`}</span> {`You will be given 10 questions, if you do not know the answer you may skip the question - the points will be zero for the question skipped. The score is out of 10. Good luck pirate! You'll need it.`}</p>}
     </div>
-    <button onClick={handleCountdown} className={`text-xl bg-slate-700 py-2 px-4 rounded-lg transition-opacity delay-700 duration-500 ${showButton ? 'opacity-100' : 'opacity-0'}`} >Ok. Let's go!</button>
+    {
+      showButton && 
+      <Ripples>
+      <button onClick={handleCountdown} className={`text-xl bg-slate-700 py-2 px-4 rounded-lg transition-opacity delay-700 duration-500`} >Ok. Let's go!</button>
+    </Ripples>
+    }
+   
   </div>
-  
   )
 }
 

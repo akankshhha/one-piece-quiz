@@ -6,6 +6,7 @@ import Scoreboard from "./Scoreboard";
 import { UserProvider } from "./context/UserContext";
 import Disclaimer from "./Disclaimer";
 import Loader from "./Loader";
+import Ripples from 'react-ripples'
 import "../App.css";
 
 const QuizFlow = () => {
@@ -83,12 +84,15 @@ const QuizFlow = () => {
           {/* View Scoreboard Button on Start Screen */}
           {!showCountdown && !quizStarted && (
             <div className="fixed bottom-4 right-4">
-              <button
-                onClick={handleShowScoreboard}
-                className="px-6 py-3 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 text-xl bg-slate-700"
-              >
-                {showScoreboard ? "Go back" : "View Showboard"}
-              </button>
+              <Ripples>
+                <button
+                  onClick={handleShowScoreboard}
+                  className="px-6 py-3 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 text-xl bg-slate-700"
+                >
+                  {showScoreboard ? "Go back" : "View Showboard"}
+                </button>
+              </Ripples>
+             
             </div>
           )}
         </>

@@ -55,7 +55,7 @@ const CountDown = ({ onComplete }) => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <h1 className="text-5xl font-semibold">Attention {userName}!</h1>
+      <h1 className="text-5xl font-semibold">Attention <span className="text-yellow-400">{userName}</span>!</h1>
 
       {count > 0 ? (
         <>

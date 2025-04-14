@@ -46,7 +46,7 @@ const ScoreboardPage = () => {
             scores?.map((entry, index) => (
               <tr key={index} className="text-center hover:bg-gray-700 transition" ref={(el) => (rowsRef.current[index] = el)}>
                 <td className="px-4 py-2">{index + 1}</td>
-                <td className="px-4 py-2">{entry.username}</td>
+                <td className="px-4 py-2 text-yellow-400">{entry.username}</td>
                 <td className="px-4 py-2">{entry.score}</td>
                 <td className="px-4 py-2">{entry.time_taken}</td>
               </tr>
