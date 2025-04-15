@@ -17,7 +17,6 @@ export const getScores = async () => {
 export const postScore = async (scoreObj) => {
     try {
         const result = await axios.post(`${BASE_URL}/scores`, scoreObj)
-        console.log(result?.data)
         return result
     } catch(error) {
         console.error('Failed to fetch scores:', error);

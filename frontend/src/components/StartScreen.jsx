@@ -123,7 +123,6 @@ const StartScreen = ({ onStart }) => {
   };
 
   const handleAfterCharacterSelection = (character) => {
-    console.log(character)
     setSelectedCharacter(character);
   };
 

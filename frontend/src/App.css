@@ -24,3 +24,8 @@ body {
   background-color: #00ff00;
   transition: width 0.3s ease-out;
 }
+
+.badge {
+  width: 2.5rem;
+  padding: 0.3rem;
+}
