@@ -38,13 +38,9 @@ const skipDisclaimer = () => {
         }}
       /> : <p>{`Hey`} <span className='text-yellow-400'>{`${userName}.`}</span> {`You will be given 10 questions, if you do not know the answer you may skip the question - the points will be zero for the question skipped. The score is out of 10. Good luck pirate! You'll need it.`}</p>}
     </div>
-    {
-      showButton && 
-      <Ripples>
-      <button onClick={handleCountdown} className={`text-xl bg-slate-700 py-2 px-4 rounded-lg transition-opacity delay-700 duration-500`} >Ok. Let's go!</button>
+    <Ripples>
+      <button onClick={handleCountdown} className={`text-xl bg-slate-700 py-2 px-4 rounded-lg transition-opacity delay-700 duration-200 ${showButton ? 'opacity-100' : 'opacity-0'}`} >Ok. Let's go!</button>
     </Ripples>
-    }
-   
   </div>
   )
 }

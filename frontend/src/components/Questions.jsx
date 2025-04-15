@@ -132,17 +132,15 @@ const Questions = ({ onGoBack }) => {
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center relative">
+    <div className="h-screen flex flex-col items-center justify-center">
       {/* End Quiz Button */}
       {!quizCompleted && (
-        <Ripples>
           <button
             onClick={handleQuizCompletion}
             className="absolute top-4 left-4 px-6 py-2 rounded-md bg-red-500 hover:bg-red-600 font-medium transition-all duration-200"
           >
             End Quiz
           </button>
-        </Ripples>
       )}
 
       {/* Quiz Timer */}
