@@ -25,7 +25,6 @@ router.post('/', async (req, res) => {
     const { username, score, time_taken } = req.body
    
     if(!username || typeof score !== 'number' || typeof time_taken !== 'number' || username.length < 3) {
-        console.log(username)
         return res.status(400).json({error: "Invalid input data!"})
     }
 
@@ -33,7 +32,6 @@ router.post('/', async (req, res) => {
         const result = await pool.query("INSERT INTO scores(username, score, time_taken) VALUES ($1, $2, $3) returning *",
         [username, score, time_taken])
         res.status(201).json(result.rows[0])
-        console.log(result.rowCount)
     } catch {
       console.error("Failed to upload score.")
       res.status(500).json({error: "Failed to upload score!"})

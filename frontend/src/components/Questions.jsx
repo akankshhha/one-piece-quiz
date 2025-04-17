@@ -13,31 +13,41 @@ const Questions = ({ onGoBack }) => {
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
   const [showCalculatedTime, setShowCalculatedTime] = useState(false);
+  const [quizState, setQuizState] = useState({
+    completed: false,
+    timeTaken: 0,
+    questionTimer: 15,
+    quizTimer: 150
+  });
+  
   const cardRef = useRef(null);
-
-  // Timer states
-  const [questionTimer, setQuestionTimer] = useState(15);
-  const [quizTimer, setQuizTimer] = useState(150);
-
-  // Final Results
-  const [quizCompleted, setQuizCompleted] = useState(false);
-  const [timeTaken, setTimeTaken] = useState(0);
-
-  const currentQuestion = questions[currentQuestionIndex];
-
-  // Timer references
   const questionIntervalRef = useRef(null);
   const quizIntervalRef = useRef(null);
 
+  const currentQuestion = questions[currentQuestionIndex];
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
+  // Format time (mm:ss)
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
   // Handle Quiz Completion
   const handleQuizCompletion = useCallback(async () => {
-    const timeUsed = 150 - quizTimer;
-    setTimeTaken(timeUsed);
-    setQuizCompleted(true);
+    const timeUsed = 150 - quizState.quizTimer;
 
-    // Stop timers
+    // Stop all timers
     clearInterval(questionIntervalRef.current);
     clearInterval(quizIntervalRef.current);
+    
+    // Update state
+    setQuizState(prev => ({
+      ...prev,
+      completed: true,
+      timeTaken: timeUsed
+    }));
 
     try {
       await postScore({
@@ -48,41 +58,33 @@ const Questions = ({ onGoBack }) => {
 
       setUsername("");
     } catch (err) {
-      console.error(err);
+      console.error("Failed to post score:", err);
     }
-  }, [quizTimer, score, userName, setUsername]);
+  }, [quizState.quizTimer, score, userName, setUsername]);
 
-  // Handle Next Question
-  const handleNextQuestion = useCallback(() => {
-    if (selectedOption === currentQuestion.answer) {
-      setScore((prevScore) => prevScore + 1);
-    }
-
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      setSelectedOption(null);
-      setShowAnswer(false);
-      setQuestionTimer(15);
-    } else {
-      handleQuizCompletion();
-    }
-  }, [
-    selectedOption,
-    currentQuestionIndex,
-    currentQuestion,
-    handleQuizCompletion,
-  ]);
-
-  const handleTransitionToNextQuestion = () => {
+  // Handle Next Question with animation
+  const handleTransitionToNextQuestion = useCallback(() => {
     // Zoom out animation
     gsap.to(cardRef.current, {
       scale: 0,
       duration: 0.5,
       ease: "power3.in",
       onComplete: () => {
-        // Call the handler to proceed to the next question
-        handleNextQuestion();
-
+        // Check if the selected answer is correct
+        if (selectedOption === currentQuestion.answer) {
+          setScore(prevScore => prevScore + 1);
+        }
+  
+        if (isLastQuestion) {
+          handleQuizCompletion();
+        } else {
+          // Move to next question and reset states
+          setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+          setSelectedOption(null);
+          setShowAnswer(false);
+          setQuizState(prev => ({ ...prev, questionTimer: 15 }));
+        }
+  
         // Zoom in animation for the new question
         gsap.fromTo(
           cardRef.current,
@@ -91,32 +93,8 @@ const Questions = ({ onGoBack }) => {
         );
       },
     });
-  };
-
-  // Countdown for question timer
-  useEffect(() => {
-    if (questionTimer > 0 && !quizCompleted) {
-      questionIntervalRef.current = setInterval(() => {
-        setQuestionTimer((prev) => prev - 1);
-      }, 1000);
-
-      return () => clearInterval(questionIntervalRef.current);
-    } else if (questionTimer === 0) {
-      handleNextQuestion();
-    }
-  }, [questionTimer, quizCompleted, handleNextQuestion]);
-
-  // Countdown for total quiz timer
-  useEffect(() => {
-    if (quizTimer > 0 && !quizCompleted) {
-      quizIntervalRef.current = setInterval(() => {
-        setQuizTimer((prev) => prev - 1);
-      }, 1000);
-      return () => clearInterval(quizIntervalRef.current);
-    } else if (quizTimer === 0) {
-      handleQuizCompletion();
-    }
-  }, [quizTimer, quizCompleted, handleQuizCompletion]);
+  }, [selectedOption, currentQuestion, isLastQuestion, handleQuizCompletion]);
+  
 
   // Handle Option Selection
   const handleOptionClick = (option) => {
@@ -124,35 +102,67 @@ const Questions = ({ onGoBack }) => {
     setShowAnswer(true);
   };
 
-  // Format time (mm:ss)
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
+  // Initialize question timer
+  useEffect(() => {
+    if (quizState.completed) return;
+    
+    if (quizState.questionTimer > 0) {
+      questionIntervalRef.current = setInterval(() => {
+        setQuizState(prev => ({ ...prev, questionTimer: prev.questionTimer - 1 }));
+      }, 1000);
+
+      return () => clearInterval(questionIntervalRef.current);
+    } else {
+      // Time's up for this question, move to next
+      handleTransitionToNextQuestion();
+    }
+  }, [quizState.questionTimer, quizState.completed, handleTransitionToNextQuestion]);
+
+  // Initialize quiz timer
+  useEffect(() => {
+    if (quizState.completed) return;
+    
+    if (quizState.quizTimer > 0) {
+      quizIntervalRef.current = setInterval(() => {
+        setQuizState(prev => ({ ...prev, quizTimer: prev.quizTimer - 1 }));
+      }, 1000);
+      return () => clearInterval(quizIntervalRef.current);
+    } else {
+      // Overall quiz time is up
+      handleQuizCompletion();
+    }
+  }, [quizState.quizTimer, quizState.completed, handleQuizCompletion]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      clearInterval(questionIntervalRef.current);
+      clearInterval(quizIntervalRef.current);
+    };
+  }, []);
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
       {/* End Quiz Button */}
-      {!quizCompleted && (
-          <button
-            onClick={handleQuizCompletion}
-            className="absolute top-4 left-4 px-6 py-2 rounded-md bg-red-500 hover:bg-red-600 font-medium transition-all duration-200"
-          >
-            End Quiz
-          </button>
+      {!quizState.completed && (
+        <button
+          onClick={handleQuizCompletion}
+          className="absolute top-4 left-4 px-6 py-2 rounded-md bg-red-500 hover:bg-red-600 font-medium transition-all duration-200"
+        >
+          End Quiz
+        </button>
       )}
 
       {/* Quiz Timer */}
       <div
         className={`absolute top-4 right-4 text-4xl transition-opacity delay-700 duration-200 ease-out ${
-          quizTimer < 30 ? "text-red-500" : "text-cream-yellow"
+          quizState.quizTimer < 30 ? "text-red-500" : "text-cream-yellow"
         } ${!showCalculatedTime ? "opacity-100" : "opacity-0"}`}
       >
-        {formatTime(quizTimer)}
+        {formatTime(quizState.quizTimer)}
       </div>
 
-      {!quizCompleted ? (
+      {!quizState.completed ? (
         <div
           className="relative p-8 bg-almost-black rounded-lg shadow-lg w-[600px] h-auto flex flex-col justify-between overflow-hidden"
           ref={cardRef}
@@ -160,10 +170,10 @@ const Questions = ({ onGoBack }) => {
           {/* Question Timer */}
           <div
             className={`text-center mb-4 text-lg ${
-              questionTimer < 5 ? "text-red-500" : "text-cream-yellow"
+              quizState.questionTimer < 5 ? "text-red-500" : "text-cream-yellow"
             }`}
           >
-            {formatTime(questionTimer)}
+            {formatTime(quizState.questionTimer)}
           </div>
 
           {/* Question Bubble */}
@@ -183,26 +193,26 @@ const Questions = ({ onGoBack }) => {
               const isSelected = option === selectedOption;
 
               return (
-                  <button
-                    key={index}
-                    onClick={() => handleOptionClick(option)}
-                    className={`flex items-center py-3 px-4 rounded-md text-lg font-medium transition-all duration-200
-            ${
-              isSelected
-                ? isCorrect
-                  ? "bg-green-100 text-green-700 border border-green-500"
-                  : "bg-red-100 text-red-700 border border-red-500"
-                : "bg-gray-700 hover:bg-gray-500"
-            }`}
-                    disabled={showAnswer}
-                  >
-                    {isSelected && (
-                      <span className="mr-3 text-xl">
-                        {isCorrect ? "✅" : "❌"}
-                      </span>
-                    )}
-                    {option}
-                  </button>
+                <button
+                  key={index}
+                  onClick={() => handleOptionClick(option)}
+                  className={`flex items-center py-3 px-4 rounded-md text-lg font-medium transition-all duration-200
+                    ${
+                      isSelected
+                        ? isCorrect
+                          ? "bg-green-100 text-green-700 border border-green-500"
+                          : "bg-red-100 text-red-700 border border-red-500"
+                        : "bg-gray-700 hover:bg-gray-500"
+                    }`}
+                  disabled={showAnswer}
+                >
+                  {isSelected && (
+                    <span className="mr-3 text-xl">
+                      {isCorrect ? "✅" : "❌"}
+                    </span>
+                  )}
+                  {option}
+                </button>
               );
             })}
           </div>
@@ -212,14 +222,10 @@ const Questions = ({ onGoBack }) => {
             <button
               onClick={handleTransitionToNextQuestion}
               className={`py-3 mt-6 rounded-md font-medium transition-all duration-200 hover:bg-slate-700 w-1/4 m-auto ${
-                currentQuestionIndex === questions.length - 1
-                  ? "text-yellow-400"
-                  : ""
+                isLastQuestion ? "text-yellow-400" : ""
               }`}
             >
-              {currentQuestionIndex === questions.length - 1
-                ? "Finish"
-                : "Next Question"}
+              {isLastQuestion ? "Finish" : "Next Question"}
             </button>
           </Ripples>
         </div>
@@ -253,7 +259,7 @@ const Questions = ({ onGoBack }) => {
               }`}
             >
               {" "}
-              {Math.floor(timeTaken / 60)}min {timeTaken % 60}sec
+              {Math.floor(quizState.timeTaken / 60)}min {quizState.timeTaken % 60}sec
             </span>
           </div>
           <Ripples>
